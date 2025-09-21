@@ -1,0 +1,87 @@
+import tensorflow as tf
+from tensorflow.keras import layers, models
+from tensorflow.keras.datasets import cifar10
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.metrics import classification_report, confusion_matrix
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+y_train_cat = to_categorical(y_train)
+y_test_cat = to_categorical(y_test)
+
+datagen = ImageDataGenerator(rotation_range=15, width_shift_range=0.1,
+                             height_shift_range=0.1, horizontal_flip=True)
+datagen.fit(x_train)
+
+model = models.Sequential([
+    layers.Conv2D(32, (3,3), activation='relu', input_shape=(32,32,3)),
+    layers.MaxPooling2D((2,2)),
+    layers.Conv2D(64, (3,3), activation='relu'),
+    layers.MaxPooling2D((2,2)),
+    layers.Conv2D(64, (3,3), activation='relu'),
+    layers.Flatten(),
+    layers.Dense(64, activation='relu'),
+    layers.Dense(10, activation='softmax')
+])
+
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+history = model.fit(datagen.flow(x_train, y_train_cat, batch_size=64),
+                    epochs=20, validation_data=(x_test, y_test_cat))
+
+plt.figure(figsize=(12,5))
+plt.subplot(1,2,1)
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend()
+
+plt.subplot(1,2,2)
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title('Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend()
+plt.show()
+
+test_loss, test_acc = model.evaluate(x_test, y_test_cat)
+print(f"Test Accuracy: {test_acc*100:.2f}%")
+
+y_pred = model.predict(x_test)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true = y_test.flatten()
+
+print("Classification Report:")
+print(classification_report(y_true, y_pred_classes, target_names=[
+    'airplane','car','bird','cat','deer','dog','frog','horse','ship','truck']))
+
+cm = confusion_matrix(y_true, y_pred_classes)
+plt.figure(figsize=(10,8))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=['airplane','car','bird','cat','deer','dog','frog','horse','ship','truck'],
+            yticklabels=['airplane','car','bird','cat','deer','dog','frog','horse','ship','truck'])
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.show()
+
+num_samples = 10
+indices = np.random.choice(len(x_test), num_samples)
+test_images = x_test[indices]
+true_labels = y_test[indices]
+class_names = ['airplane','car','bird','cat','deer','dog','frog','horse','ship','truck']
+
+plt.figure(figsize=(15,5))
+for i in range(num_samples):
+    plt.subplot(2,5,i+1)
+    plt.imshow(test_images[i])
+    plt.title(f"Pred: {class_names[y_pred_classes[indices[i]]]} \nTrue: {class_names[true_labels[i][0]]}")
+    plt.axis('off')
+plt.show()
