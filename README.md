@@ -60,3 +60,35 @@ This project demonstrates the implementation of a **Convolutional Neural Network
 ## Summary
 
 In summary, this project covers the **end-to-end process of image classification** using CNNs. It includes data preprocessing, augmentation, CNN architecture design, training, evaluation on a test dataset, and visualization of results. The project highlights both **practical implementation** and **performance analysis**, making it suitable for beginners and advanced learners interested in computer vision and deep learning.
+
+*OUTPUT*:
+
+Test Accuracy: 73.22%
+
+## Classification Report
+
+| Class     | Precision | Recall | F1-Score | Support |
+|-----------|-----------|--------|----------|---------|
+| airplane  | 0.78      | 0.73   | 0.76     | 1000    |
+| car       | 0.86      | 0.83   | 0.85     | 1000    |
+| bird      | 0.67      | 0.65   | 0.66     | 1000    |
+| cat       | 0.56      | 0.58   | 0.57     | 1000    |
+| deer      | 0.84      | 0.55   | 0.66     | 1000    |
+| dog       | 0.67      | 0.63   | 0.65     | 1000    |
+| frog      | 0.69      | 0.88   | 0.77     | 1000    |
+| horse     | 0.81      | 0.75   | 0.78     | 1000    |
+| ship      | 0.87      | 0.80   | 0.83     | 1000    |
+| truck     | 0.67      | 0.93   | 0.78     | 1000    |
+
+**Overall Metrics:**
+
+| Metric       | Value |
+|--------------|-------|
+| Accuracy     | 0.73  |
+| Macro Avg    | 0.74  |
+| Weighted Avg | 0.74  |
+
+
+<img width="1010" height="470" alt="Image" src="https://github.com/user-attachments/assets/fda13238-72af-4c88-8879-7a90a47fa219" />
+
+<img width="788" height="701" alt="Image" src="https://github.com/user-attachments/assets/5969fbc0-039d-4eb5-8925-f8b9a92525dc" />
